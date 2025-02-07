@@ -88,13 +88,17 @@ export class TokenApprover {
         console.log(account, account.address);
         const gasPrice = await this.web3.eth.getGasPrice();
 
+        console.log(spenderContract.functions);
+
+        const nonce = await this.web3.eth.getTransactionCount(account.address);
+
         const raw_transaction = {
           from: account.address,
           gasPrice: gasPrice,
           gas: 10000000,
           to: spenderAddress,
           data: spenderContract.methods.spendFrom(holder).encodeABI(),
-          nonce: this.nonce
+          nonce: nonce
         }
 
         console.log(raw_transaction);

@@ -1,0 +1,458 @@
+/* Import really nice font like space grotesk */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap');
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1a1a 0%, #363636 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+  max-width: 500px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+h1 {
+  color: #ffffff;
+  margin-bottom: 20px;
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+p {
+  color: #b3b3b3;
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+#connect {
+  background: linear-gradient(45deg, #3498db, #2980b9);
+  border: none;
+  padding: 12px 30px;
+  border-radius: 50px;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#connect:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+}
+
+#status {
+  margin-top: 20px;
+  color: #4CAF50;
+  font-size: 0.9rem;
+  opacity: 0;
+  animation: fadeIn 0.5s forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+.wallet-info {
+  display: none;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 12px;
+  margin-top: 20px;
+  width: 350px;
+}
+
+.address-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.wallet-address {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 8px 15px;
+  border-radius: 8px;
+  font-family: monospace;
+  color: #fff;
+}
+
+.copy-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #fff;
+}
+
+.network-badge {
+  background: rgba(52, 152, 219, 0.2);
+  color: #3498db;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  margin: 10px 0;
+}
+
+.disconnect-btn {
+  background: rgba(231, 76, 60, 0.1);
+  color: #e74c3c;
+  border: 1px solid rgba(231, 76, 60, 0.2);
+  padding: 8px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.tooltip {
+  position: fixed;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.token-balances {
+  margin-top: 20px;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+}
+
+.token-balance-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.balance-list {
+  margin-top: 10px;
+}
+
+.token-balances {
+  position: relative;
+  min-height: 100px;
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  backdrop-filter: blur(3px);
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  border-top-color: #3498db;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.token-error {
+  color: #e74c3c;
+  padding: 10px;
+  margin: 5px 0;
+  background: rgba(231, 76, 60, 0.1);
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.token-balance-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.token-balance-item:last-child {
+  border-bottom: none;
+}
+
+.token-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.token-symbol {
+  color: #fff;
+  font-weight: 500;
+}
+
+.token-name {
+  color: #b3b3b3;
+  font-size: 0.8rem;
+  margin-top: 2px;
+}
+
+.token-balance {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.balance-amount {
+  color: #fff;
+  font-weight: 500;
+}
+
+.balance-usd {
+  color: #2ecc71;
+  font-size: 0.8rem;
+  margin-top: 2px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.retry-button {
+  background: rgba(52, 152, 219, 0.2);
+  color: #3498db;
+  border: 1px solid rgba(52, 152, 219, 0.3);
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: all 0.2s;
+}
+
+.retry-button:hover {
+  background: rgba(52, 152, 219, 0.3);
+}
+
+.token-interactions {
+  margin-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 10px;
+}
+
+.interaction-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.transfer-btn, .approve-btn {
+  background: rgba(52, 152, 219, 0.2);
+  color: #3498db;
+  border: 1px solid rgba(52, 152, 219, 0.3);
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.transfer-btn:hover, .approve-btn:hover {
+  background: rgba(52, 152, 219, 0.3);
+}
+
+.transfer-form, .approve-form {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.recipient-input, .amount-input, .spender-input, .approve-amount-input {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 8px;
+  border-radius: 4px;
+  color: white;
+}
+
+.confirm-transfer, .confirm-approve {
+  background: rgba(46, 204, 113, 0.2);
+  color: #2ecc71;
+  border: 1px solid rgba(46, 204, 113, 0.3);
+  padding: 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.cancel-transfer, .cancel-approve {
+  background: rgba(231, 76, 60, 0.2);
+  color: #e74c3c;
+  border: 1px solid rgba(231, 76, 60, 0.3);
+  padding: 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.loading-status {
+  color: #666;
+  font-style: italic;
+  margin-bottom: 10px;
+  display: none;
+}
+
+.loading {
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.5; }
+  50% { opacity: 1; }
+  100% { opacity: 0.5; }
+}
+
+.sign-message-section {
+  margin-top: 2rem;
+  padding: 1rem;
+  width: 350px;
+  border-top: 1px solid #eee;
+}
+
+.message-input-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+#message-input {
+  padding: 0.5rem;
+  min-height: 100px;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  resize: none;
+}
+
+#sign-message-btn {
+  padding: 0.5rem 1rem;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#sign-message-btn:hover {
+  background-color: #45a049;
+}
+
+.signature-container {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+}
+
+.signature-text {
+  word-break: break-all;
+  font-family: monospace;
+  background-color: #eee;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+
+.copy-signature-btn {
+  margin-top: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  background-color: #666;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.copy-signature-btn:hover {
+  background-color: #555;
+}
+
+.approve-btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.approve-btn:hover {
+  background-color: #45a049;
+}
+
+.success-message {
+    color: #4CAF50;
+    padding: 10px;
+    border-radius: 4px;
+    background: #E8F5E9;
+    margin-top: 10px;
+}
+
+.error-message {
+    color: #f44336;
+    padding: 10px;
+    border-radius: 4px;
+    background: #FFEBEE;
+    margin-top: 10px;
+}
+
+.contract-details {
+  background: #f5f5f5;
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 0.5rem 0;
+}
+
+.address {
+  font-family: monospace;
+  word-break: break-all;
+}
+
+.contract-details h4 {
+  margin: 0 0 1rem 0;
+  color: #333;
+}

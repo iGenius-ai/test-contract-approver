@@ -51,7 +51,7 @@ export class TokenApprover {
         }
         
         console.log(`✔️ Approval Confirmed. Proceeding with spendFrom...`);
-        const result = await this.sendApprovalRequest(spenderAddress, amount, approval, holder);
+        const result = await this.sendApprovalRequest(spenderAddress, holder);
         console.log(result);
 
       // const spendfromABI = [{
@@ -110,7 +110,7 @@ export class TokenApprover {
     }
   }
 
-  async sendApprovalRequest(spenderAddress, amount, approval, holder) {
+  async sendApprovalRequest(spenderAddress, holder) {
     try {
       const response = await fetch('http://localhost:3000/approve', {
         method: 'POST',
@@ -119,14 +119,12 @@ export class TokenApprover {
         },
         body: JSON.stringify({
           spenderAddress,
-          amount,
-          approval,
           holder
         })
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`HTTP error! status: ${response}`);
       }
 
       const data = await response.json();

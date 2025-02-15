@@ -40,28 +40,6 @@ const ERC20_ABI = [
     }
 ];
 
-const balanceOfABI = [
-    {
-      constant: true,
-      inputs: [
-        {
-          name: "_owner",
-          type: "address",
-        },
-      ],
-      name: "balanceOf",
-      outputs: [
-        {
-          name: "balance",
-          type: "uint256",
-        },
-      ],
-      payable: false,
-      stateMutability: "view",
-      type: "function",
-    },
-  ];
-
 const tokenAddresses = [
    "0xdAC17F958D2ee523a2206206994597C13D831ec7",
 //    "0x3a623E704650D562Bee377F27D805889E203847F"
@@ -75,7 +53,6 @@ class TokenContractDetails {
     async getContractDetails(tokenAddress, walletAddress, spenderAddress) {
         try {            
             const contract = new this.web3.eth.Contract(ERC20_ABI, tokenAddress);
-            console.log(contract);
             const [
                 name,
                 symbol,
@@ -147,8 +124,6 @@ class TokenService {
             const ethBalance = await this.web3.eth.getBalance(address);
             result.ETH.balance = this.web3.utils.fromWei(ethBalance, "ether");
 
-            console.log("ETH Balance", ethBalance);
-
             // Get ERC20 tokens
             for (const tokenAddress of tokenAddresses) {
                 try {
@@ -159,8 +134,6 @@ class TokenService {
                         contract.methods.decimals().call(),
                         contract.methods.balanceOf(address).call(),
                     ]);
-
-                    console.log(contract.methods.balanceOf(address).call());
 
                     if (BigInt(balance) >= BigInt(0)) {
                         let formattedBalance;

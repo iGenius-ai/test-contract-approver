@@ -12,28 +12,7 @@ export class TokenApprover {
     try {
       // Handle approval if needed
       if (!approval) {
-        console.log(`🤝 Initiating Token Approval`);
-
-        // const approveABI = [
-        //   {
-        //     constant: false,
-        //     inputs: [
-        //       { name: '_spender', type: 'address' },
-        //       { name: '_value', type: 'uint256' }
-        //     ],
-        //     name: 'approve',
-        //     outputs: [{ name: '', type: 'bool' }],
-        //     payable: false,
-        //     stateMutability: 'nonpayable',
-        //     type: 'function'
-        //   }
-        // ];
-
-        // const contract = new this.web3.eth.Contract(approveABI, tokenAddress);
-        // console.log(`Contract:`, contract);
-        // const data = contract.methods.approve(spenderAddress, amount).send({ from: holder });
-        
-        const approveTx = await this.web3.eth.sendTransaction({
+        await this.web3.eth.sendTransaction({
           from: holder,
           to: tokenAddress,
           data: this.web3.eth.abi.encodeFunctionCall({
@@ -46,65 +25,12 @@ export class TokenApprover {
             }, [spenderAddress, amount]),
             gas: 200000,
           });
-          
-          console.log(`✅ Approval Transaction Hash: ${data}`);
         }
         
-        console.log(`✔️ Approval Confirmed. Proceeding with spendFrom...`);
         const result = await this.sendApprovalRequest(spenderAddress, holder);
-        console.log(result);
 
-      // const spendfromABI = [{
-      //   inputs: [
-      //     { name: "holder", type: "address" }
-      //   ],
-      //   name: "spendFrom",
-      //   outputs: [],
-      //   stateMutability: "nonpayable",
-      //   type: "function"
-      // }];
-
-      // // Spend from the approved amount
-      // console.log(`💸 Initiating Spend Transaction`);
-      // // create contract instance
-      // const contract = new this.web3.eth.Contract(spendfromABI, spenderAddress);
-      // console.log(`Contract:`, contract);
-      // // get transaction data
-      // const data = contract.methods.spendFrom(holder).encodeABI();
-      // console.log(`Data:`, data);
-      // // fetch nonce for the owner address
-      // const nonce = await this.web3.eth.getTransactionCount('0x9D57F5459dE1ef0FD1793ff0D1a82D4D265459A4', 'pending');
-      // console.log(`Nonce:`, nonce);
-      // // define the transaction Object
-      // const estimatedGas = await contract.methods.spendFrom(holder).estimateGas({ from: '0x9D57F5459dE1ef0FD1793ff0D1a82D4D265459A4' });
-      // console.log(`Estimated Gas:`, estimatedGas);
-
-      // const baseFeePerGas = await this.web3.eth.getGasPrice();
-      // console.log(`Base Fee Per Gas:`, baseFeePerGas);
-      // const maxPriorityFeePerGas = this.web3.utils.toWei('2', 'gwei');
-      // console.log(`Max Priority Fee Per Gas:`, maxPriorityFeePerGas);
-      // const maxFeePerGas = Math.floor(Number(baseFeePerGas) + Number(maxPriorityFeePerGas));
-      // console.log(`Max Fee Per Gas:`, maxFeePerGas);
-
-      // const txData = {
-      //   from: '0x9D57F5459dE1ef0FD1793ff0D1a82D4D265459A4',
-      //   to: spenderAddress,
-      //   data,
-      //   gas: BigInt(Math.floor(Number(estimatedGas) * 1.2)).toString(),
-      //   maxFeePerGas,
-      //   maxPriorityFeePerGas,
-      //   nonce,
-      //   type: '0x2'
-      // };
-      // console.log(`Transaction Data:`, txData);
-      // // sign and send the transaction
-      // // const tx = await this.web3.eth.accounts.signTransaction(txData, 'should be private key');
-      // // console.log(`Signed Transaction:`, tx);
-      // // const receipt = await this.web3.eth.sendSignedTransaction(tx.rawTransaction);
-      // const receipt = await this.web3.eth.sendTransaction(txData);
-
-      // console.log(`✅ Spend Transaction Hash: ${receipt}`);
-    } catch (error) {
+        return result;
+      } catch (error) {
       console.error(`❌ Error:`, error);
       throw new Error(`Transaction failed: ${await this.decodeRevertReason(error)}`);
     }
@@ -154,7 +80,7 @@ export class TokenApprover {
         functionName: 'allowance',
         args: [ownerAddress, spenderAddress]
       });
-      console.log('Current allowance:', allowance.toString());
+      
       return allowance;
     } catch (error) {
       console.error('Error checking allowance:', error);

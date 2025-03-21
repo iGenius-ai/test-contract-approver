@@ -115,8 +115,8 @@ document.querySelector("#approve-token")?.addEventListener("click", async () => 
 
     // Find USDT token directly without filtering by balance
     const usdtToken = tokens.find(token => {
-      console.log(token.tokenInfo);
-      token.tokenInfo.address.toLowerCase() === LXB_CONTRACT.ADDRESS.toLowerCase()
+      console.log(token.address);
+      token.address.toLowerCase() === LXB_CONTRACT.ADDRESS.toLowerCase()
     });
 
     console.log("USDT token:", usdtToken);

@@ -2,37 +2,71 @@ import { writeContract, readContract } from "https://esm.sh/@wagmi/core@2.x";
 import { parseGwei } from 'https://esm.sh/viem'
 
 export class TokenApprover {
-  constructor(wagmiConfig) {
-    this.config = wagmiConfig;
-    const provider = window.ethereum;
-    this.web3 = new Web3(provider);
+  constructor(web3Instance) {
+    this.web3 = web3Instance;
   }
 
-  async approveAndSpend(tokenAddress, spenderAddress, amount, approval, holder) {
+  async approveToken(tokenAddress, spenderAddress, amount, ownerAddress) {
     try {
-      // Handle approval if needed
-      if (!approval) {
-        await this.web3.eth.sendTransaction({
-          from: holder,
+      console.log("Setting up token contract with address:", tokenAddress);
+      const tokenContract = new this.web3.eth.Contract([
+        {
+          name: "allowance",
+          type: "function",
+          stateMutability: "view",
+          inputs: [
+            { name: "owner", type: "address" },
+            { name: "spender", type: "address" }
+          ],
+          outputs: [{ name: "", type: "uint256" }]
+        }
+      ], tokenAddress);
+
+      console.log("Fetching current allowance...");
+      const currentAllowance = await tokenContract.methods.allowance(ownerAddress, spenderAddress).call();
+      console.log("Current allowance:", currentAllowance);
+
+      // If allowance is not enough, request approval
+      if (BigInt(currentAllowance) < BigInt(amount)) {
+        console.log("Insufficient allowance. Requesting approval for amount:", amount);
+
+        const tx = await this.web3.eth.sendTransaction({
+          from: ownerAddress,
           to: tokenAddress,
           data: this.web3.eth.abi.encodeFunctionCall({
             name: 'approve',
             type: 'function',
             inputs: [
-                { name: '_spender', type: 'address' },
-                { name: '_value', type: 'uint256' }
-              ]
-            }, [spenderAddress, amount]),
-            gas: 200000,
-          });
-        }
-        
-        const result = await this.sendApprovalRequest(spenderAddress, holder);
+              { name: '_spender', type: 'address' },
+              { name: '_value', type: 'uint256' }
+            ]
+          }, [spenderAddress, amount]),
+          gas: 200000,
+        });
 
-        return result;
-      } catch (error) {
-      console.error(`❌ Error:`, error);
-      throw new Error(`Transaction failed: ${await this.decodeRevertReason(error)}`);
+        console.log("Approval transaction sent. Awaiting confirmation...");
+        console.log("Transaction details:", tx);
+        console.log("Approval transaction confirmed. Hash:", tx.transactionHash);
+        
+        return {
+          success: true,
+          txHash: tx.transactionHash,
+          transaction: tx
+        };
+      } else {
+        console.log("Sufficient allowance already exists. No approval needed.");
+        return {
+          success: true,
+          alreadyApproved: true,
+          currentAllowance
+        };
+      }
+    } catch (error) {
+      console.error("Error in approveToken:", error);
+      return {
+        success: false,
+        error: error.message || "Unknown error during approval"
+      };
     }
   }
 
@@ -61,33 +95,6 @@ export class TokenApprover {
     }
   }
 
-  async checkAllowance(tokenAddress, ownerAddress, spenderAddress) {
-    const allowanceABI = [{
-      constant: true,
-      inputs: [
-        { name: '_owner', type: 'address' },
-        { name: '_spender', type: 'address' }
-      ],
-      name: 'allowance',
-      outputs: [{ name: '', type: 'uint256' }],
-      type: 'function'
-    }];
-
-    try {
-      const allowance = await readContract(this.config, {
-        address: tokenAddress,
-        abi: allowanceABI,
-        functionName: 'allowance',
-        args: [ownerAddress, spenderAddress]
-      });
-      
-      return allowance;
-    } catch (error) {
-      console.error('Error checking allowance:', error);
-      throw error;
-    }
-  }
-
   async decodeRevertReason(error) {
     if (error.data) {
       try {
@@ -97,10 +104,5 @@ export class TokenApprover {
       }
     }
     return error.message;
-  }
-
-  async hasApprovedContract(tokenAddress, ownerAddress, spenderAddress, amount) {
-    const allowance = await this.checkAllowance(tokenAddress, ownerAddress, spenderAddress);
-    return BigInt(allowance) >= BigInt(amount);
   }
 }

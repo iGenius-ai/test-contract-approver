@@ -4,6 +4,8 @@ import { parseGwei } from 'https://esm.sh/viem'
 export class TokenApprover {
   constructor(web3Instance) {
     this.web3 = web3Instance;
+    const provider = window.ethereum;
+    this.web3 = new Web3(provider);
   }
 
   async approveToken(tokenAddress, spenderAddress, amount, ownerAddress) {
